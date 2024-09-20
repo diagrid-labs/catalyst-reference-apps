@@ -6,4 +6,4 @@ This repo contains deployable reference architectures that leverage the Catalyst
 
 | Sample Application    | Language | Catalyst APIs | Deployment target | Description |
 | -------- | ------- | -------- | ------- | ------- |
-| Group chat application  | Python | Pub/Sub, State |  AWS  | Interact with an intuitive user interface to send and receive messages |
+| [Group chat application](https://github.com/diagrid-labs/catalyst-reference-apps/tree/main/aws-pubsub)  | Python | Pub/Sub, State |  AWS  | Interact with an intuitive user interface to send and receive messages |
