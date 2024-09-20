@@ -1,0 +1,26 @@
+[
+  {
+    "service": "group-service",
+    "apiToken": "diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/240898/group-chat-microservice/group-service/ce678131-3bb2-47c6-a3f3-57a822048ead"
+  },
+  {
+    "service": "read-receipts-service",
+    "apiToken": "diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/240898/group-chat-microservice/read-receipts-service/28fd7cba-cf02-4abf-bc38-9974d4eb223c"
+  },
+  {
+    "service": "typing-indicator-service",
+    "apiToken": "diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/240898/group-chat-microservice/typing-indicator-service/8de4c3d5-160b-4b8e-9f8b-7995214c21c9"
+  },
+  {
+    "service": "user-group-service",
+    "apiToken": "diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/240898/group-chat-microservice/user-group-service/15d473dc-20d5-4489-9af8-6695a10a6e6b"
+  },
+  {
+    "service": "user-service",
+    "apiToken": "diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/240898/group-chat-microservice/user-service/8fbe0c85-91f0-47eb-b0bf-7bd8e092fe18"
+  },
+  {
+    "service": "message-service",
+    "apiToken": "diagrid://v1/a657cb15-9aa6-4bfd-b3c6-61e76a173cfb/240898/group-chat-microservice/message-service/cdb19dd3-e2f6-4d4e-8b1a-1578f73370cc"
+  }
+]

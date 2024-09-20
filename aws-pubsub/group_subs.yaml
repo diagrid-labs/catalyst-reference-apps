@@ -1,0 +1,23 @@
+apiVersion: cra.diagrid.io/v1beta1
+kind: Subscription
+metadata:
+  name: group-subscription-topic
+spec:
+  projectId: group-chat-microservices
+  scopes:
+    - typing-indicator-service
+    - user-group-service
+    - group-service
+  subscriptionSpec:
+    bulkSubscribe:
+      enabled: false
+    connectionName: aws-pubsub
+    deadLetterTopic: group-subscription-DLT
+    routes:
+      default: /default/group
+      rules:
+        - match: event.data["event_type"]=="send-message"
+          path: /groups/message
+        - match: event.data["event_type"]=="add-group-participant"
+          path: /group/add-user
+    topic: group-subscription-topic
