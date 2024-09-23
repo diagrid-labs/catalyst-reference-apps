@@ -10,7 +10,7 @@ demand by Catalyst.
 Each service will have a state for data storage and for this application, we'll
 be using AWS DynamoDB.
 
-![group](./assets/group.png)
+![group](./assets/group_dk.png)
 
 There's a Github Actions pipeline setup to automate the creation and
 configuration of this project, alongside all it's components.
