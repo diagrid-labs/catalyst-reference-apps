@@ -1,7 +1,7 @@
 # Create Diagrid(Catalyst) Project And Components
 
-Because this project has 6 services, each of these services will represent a
-Catalyst App Id.
+Because this project has 6 services, each service will represent a Catalyst App
+Id.
 
 Communication between services will be done through a pubsub connection that
 consist of SNS topics and SQS subscriptions. AWS SNS/SQS will be configured on
@@ -12,8 +12,32 @@ be using AWS DynamoDB.
 
 ![group](./assets/group_dk.png)
 
-There's a Github Actions pipeline setup to automate the creation and
-configuration of this project, alongside all it's components.
+## Project Directory Structure
+
+```
+|catalyst-reference-apps
+|-.github
+   |--workflows
+|-aws-pubsub
+  |--cdk-graphql-stack(`realtime appsync api`)
+  |--cdk-infra(`docker-ecr-ecs/fargate`)
+  |--docs
+  |--group-chat-app-ui
+  |--services(Catalyst Apps)
+|-group-subs.yaml
+|-readme.md
+```
+
+The `.github` folder contains a Github Actions pipeline setup to automate the
+creation and configuration of this project, alongside all it's components.
+
+The workflow
+
+- Creates a new Diagrid Catalyst project called `group-chat-microservices`.
+- Creates 6 catalyst apps for the project.
+- Configures a Dynamodb state for each Catalyst App. Meaning 6 Dynamodb States.
+- Creates a single pubsub (AWS SQS/SNS) for all the states.
+- Configures a subscription topic for catalyst apps to publish and subscribe to.
 
 Create a fork of this github repository[INSERT_GITHUB_REPOSITORY_HERE].
 
