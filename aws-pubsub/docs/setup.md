@@ -75,9 +75,9 @@ This job
   `query`, `mutation` and `subscription` operations on the underlying data.
 
 The generated endpoint will also be used to configure the group chat apps
-frontend amplify application. But we'll talk about this later.
+frontend amplify application, which we'll cover later
 
-## How to deploy this app
+## Deploy
 
 Create a fork of this github repository
 https://github.com/diagrid-labs/catalyst-reference-apps/tree/main.
@@ -128,34 +128,100 @@ You'll find a project named `groupChatApiMicroservice`
 ![group_chat_project](./assets/group_chat.png)
 
 Click on the project, navigate to settings on the bottom left handside of the
-menu and make sure you have a valid api key.
+menu and grab the keys below.
+
+```
+  "aws_appsync_graphqlEndpoint": [GRAPHQL_ENDPOINT],
+  "aws_appsync_region": "us-east-1",
+  "aws_appsync_authenticationType": "API_KEY",
+  "aws_appsync_apiKey": "da2-**************",
+```
 
 ![appsync_settings](./assets/appsync_settings.png)
 ![valid_api_key](./assets/valid_api_key.png)
 
+Once you've gotten them, navigate to the directory
+`../aws-pubsub/group-chat-app-ui/src`. Open up the file `amplifyconfig.json` and
+add the key-value pairs to the file
+
+```json
+{
+  "aws_project_region": "us-east-1",
+  "aws_appsync_graphqlEndpoint": "https:******",
+  "aws_appsync_region": "us-east-1",
+  "aws_appsync_authenticationType": "API_KEY",
+  "aws_appsync_apiKey": "da2-********",
+  "aws_cognito_identity_pool_id": "us-east-1:627cb5d3-ecaf-4fa1-a754-545144620488",
+  "aws_cognito_region": "us-east-1",
+  "aws_user_pools_id": "us-east-1_ak4Wv1FF4",
+  "aws_user_pools_web_client_id": "4heoc8i46cacpm6nimj564hd23",
+  "oauth": {},
+  "aws_cognito_username_attributes": ["EMAIL"],
+  "aws_cognito_social_providers": [],
+  "aws_cognito_signup_attributes": ["EMAIL"],
+  "aws_cognito_mfa_configuration": "OFF",
+  "aws_cognito_mfa_types": ["SMS"],
+  "aws_cognito_password_protection_settings": {
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": []
+  },
+  "aws_cognito_verification_mechanisms": ["EMAIL"],
+  "aws_user_files_s3_bucket": "groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev",
+  "aws_user_files_s3_bucket_region": "us-east-1"
+}
+```
+
 Navigate back to your project's home page by clicking the name of the project in
 the left menu. ![valid_api_key](./assets/project_name.png)
 
-Scroll to to the middle of the page and copy the command show in the screenshot
-below. It has this format
+Scroll to to the middle of the page and copy the command shown in the screenshot
+below. ![valid_api_key](./assets/copy_command.png)
+
+Make sure you change the `--appId`
 
 ```bash
 npx @aws-amplify/cli codegen add --apiId 5ytfjd2****** --region us-east-1
 ```
 
-Next, navigate to the directory `group-chat-app-ui`, and run the following
-commands
+Next,from your IDE, navigate to the directory
+`../aws-pubsub/group-chat-app-ui/`, and run the following commands
 
 `npm install aws-amplify`
 
 `npm i` and the command you copied above.
 
-![valid_api_key](./assets/copy_command.png) Assuming you created an AWS Access
-Key/secret in the prerequisites section.
+`amplify init` to initialize a new amplify application.
 
-## Running Locally
+You'll also have to add 2 amplify categories.
 
-Once cloned and open inside the IDE.
+- Auth
+- Storage.
+
+Run the command `amplify add auth` and follow the prompts. Please view the
+screenshot below
+
+![amplify auth](../docs/assets/amplify_auth.png)
+
+Run the command `amplify add storage and follow the prompts as show on the
+screenshot.
+
+![amplify storage](../docs/assets/amplify_storage.png)
+
+Finally, run the command
+
+`amplify push` to push the application and create cloud resources.
+
+You can run the application locally, using the command
+
+`npm run dev`
+
+or follow this [elaborate guide](https://docs.amplify.aws/vue/start/quickstart/)
+to deploy the application to the cloud.
+
+## Creating and running a diagrid Catalyst app locally
+
+Assuming you created an AWS Access Key/secret in the prerequisites section. Once
+cloned and open inside the IDE.
 
 Setup these environment variables in your CLI.
 
