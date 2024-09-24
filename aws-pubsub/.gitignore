@@ -34,7 +34,7 @@ healthchecksdb
 #wwwroot/
 group-chat-app-ui/.nuxt
 group-chat-app-ui/amplify
-group-chat-app-ui/.graphqlconfig.yml
+#group-chat-app-ui/.graphqlconfig.yml
 group-chat-app-ui/package-lock.json
 # Visual Studio 2017 auto generated files
 Generated\ Files/
