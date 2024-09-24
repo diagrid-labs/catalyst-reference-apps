@@ -51,3 +51,21 @@ can later be used to show the number of unread messages a user has in a group.
 
 Communication between services are done through events. This effectively leads
 to isolation and loose coupling between services.
+
+The configured AWS SNS/SQS pubsub serves as a great message broker in the
+application.
+
+We have a single subscription topic(`group-subscription-topic`) which routes
+messages to different event handlers.
+
+## Event Types
+
+### send-message
+
+This event is published by the `message-service` and subscribed to by the
+`group-service` and `typing-indicator-service`.
+
+### add-group-participant
+
+This event is published by the `group-service` and subscribed to by the
+`user-group-service`.
