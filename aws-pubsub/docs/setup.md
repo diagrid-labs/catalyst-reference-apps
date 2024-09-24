@@ -96,13 +96,33 @@ Click on `Actions`.
 Click on the blue button `New repository secret` and add key-value pairs for
 each of these repository secrets.
 
+For the Diagrid API_KEY, assuming you've installed and logged into the diagrid
+CLI from the command line, run this command
+
+```bash
+
+diagrid apikey create --name [ENTER NAME OF API KEY] --role  cra.diagrid:admin
+
+```
+
+Replace `[ENTER NAME OF API KEY]` with any name of your choice.
+
+For the `DIAGRID_PROJECT` , use this `group-chat-microservices`
+
+- AWS_ACCESS_KEY_ID
+- AWS_ACCOUNT_ID
+- AWS_DEFAULT_REGION
+- AWS_SECRET_ACCESS_KEY
+- DIAGRID_API_KEY
+- DIAGRID_PROJECT
+
 Do a git push once you're done. If the everything was configured properly, your
 workflow should run and all 3 jobs completed successfully.
 
 Now, sign into your aws console, from the search bar, type `appsync`, navigate
 to your appsync console.
 
-![seach_appsync](./assets/search_appsync.png)
+![search_appsync](./assets/search_appsync.png)
 
 You'll find a project named `groupChatApiMicroservice`
 ![group_chat_project](./assets/group_chat.png)
@@ -126,46 +146,27 @@ npx @aws-amplify/cli codegen add --apiId 5ytfjd2****** --region us-east-1
 Next, navigate to the directory `group-chat-app-ui`, and run the following
 commands
 
-`npm install aws-amplify` `npm i` and the command you copied above.
+`npm install aws-amplify`
+
+`npm i` and the command you copied above.
 
 ![valid_api_key](./assets/copy_command.png) Assuming you created an AWS Access
 Key/secret in the prerequisites section.
 
-For the Diagrid API_KEY, assuming you've installed and logged into the diagrid
-CLI from the command line, run this command
+## Running Locally
 
-```bash
+Once cloned and open inside the IDE.
 
-diagrid apikey create --name [ENTER NAME OF API KEY] --role  cra.diagrid:admin
+Setup these environment variables in your CLI.
+
+```
+export CONNECTION_ACCESS_KEY=******
+export CONNECTION_SECRET_KEY=********8
+export AWS_DEFAULT_REGION=****
+export AWS_ACCOUNT_ID=2******
+export GROUP_CHAT_MICROSERVICES=group-chat-microservices
 
 ```
 
-Replace `[ENTER NAME OF API KEY]` with any name of your choice.
-
-For the `DIAGRID_PROJECT` , use this `group-chat-microservices`
-
-- AWS_ACCESS_KEY_ID
-- AWS_ACCOUNT_ID
-- AWS_DEFAULT_REGION
-- AWS_SECRET_ACCESS_KEY
-- DIAGRID_API_KEY
-- DIAGRID_PROJECT
-
-Clone your fork and open it with any IDE of your choice. Navigate to the
-`.github/workflows` folder and you'll find a pipeline with 3 jobs.
-
-The first job creates and configures a diagrid catalyst project.
-
-The second job deploys each catalyst App to ECS/FARGATE, generates endpoints
-using the Application Load Balancer and then sets up these endpoints as public
-endpoints in your catalyst Apps. Corresponding code is inside the `cdk-infra`
-directory.
-
-The third job creates a Appsync API as a single point of entry into your
-application, using each generated endpoint as http datasources. Corresponding
-code is inside the `cdk-graphql-stack` directory.
-
-## Running Locally
-
-Once cloned and open inside the IDE, run the command `python run.py` ... to be
-continued
+Then run the command `python run.py` to install and configure your diagrid
+project and components
