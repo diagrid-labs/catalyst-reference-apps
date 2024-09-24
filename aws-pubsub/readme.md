@@ -1,6 +1,6 @@
 # Group Chat Microservice
 
-1.[Prerequisites](./docs/prerequisites.md)
+![Solutions architecture](./docs/assets/solutions_architecture.png) 1.[Prerequisites](./docs/prerequisites.md)
 
 2.[Setup](./docs/setup.md)
 
