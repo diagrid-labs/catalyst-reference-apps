@@ -31,13 +31,53 @@ be using AWS DynamoDB.
 The `.github` folder contains a Github Actions pipeline setup to automate the
 creation and configuration of this project, alongside all it's components.
 
-The workflow
+The workflow is broken down into 3 jobs.
 
-- Creates a new Diagrid Catalyst project called `group-chat-microservices`.
-- Creates 6 catalyst apps for the project.
+### setup-diagrid-project
+
+This job
+
+- Creates a new Diagrid Catalyst project called `group-chat-microservices` with
+  6 Catalyst apps.
 - Configures a Dynamodb state for each Catalyst App. Meaning 6 Dynamodb States.
 - Creates a single pubsub (AWS SQS/SNS) for all the states.
 - Configures a subscription topic for catalyst apps to publish and subscribe to.
+
+### 2. upload-to-ecs
+
+This job
+
+- Retrieves the Diagrid Project variables such as `apitoken` for each catalyst
+  app, and also the `http_url` and `grpc_url` which will be passed in as
+  Environment Variables when creating Fargate Tasks for each service in
+  ECS(Elastic Container Service).
+
+- Uploads a docker image for each catalyst app(service) to Amazon Elastic
+  Container Registry(ECR)
+- Installs A CDK project alongside some dependencies
+
+- Creates a VPC(Virtual Private Cloud) configuration with subnets, availability
+  zones and VPC Logs for an ECS cluster.
+- Configures an Amazon Elastic Container Service(ECS) cluster and uploads each
+  ECR image as a Fargate while passing in the with individual Application Load
+  Balancers(ALB).
+- Gets the Domain Name Service(DNS) for each ALB and adds them as a public
+  endpoint to each Catalyst App.
+
+### 3. deploy-graphql-cdk-stack
+
+This job
+
+- Installs CDK and accompanying dependencies.
+- Grabs all ALB DNS for each service and passes them as a json file to a CDK
+  project.
+- Deploys CDK Project and generates an endpoint which can be used to perform
+  `query`, `mutation` and `subscription` operations on the underlying data.
+
+The generated endpoint will also be used to configure the group chat apps
+frontend amplify application. But we'll talk about this later.
+
+## How to deploy this app
 
 Create a fork of this github repository[INSERT_GITHUB_REPOSITORY_HERE].
 
