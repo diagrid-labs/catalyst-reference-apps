@@ -1,9 +1,9 @@
 name: Deploy AWS Pub/Sub Reference App Resources
 
-# on:
-#   push:
-#     branches:
-#       - main
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   setup-diagrid-project:
@@ -12,7 +12,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@main
+        uses: aws-actions/configure-aws-credentials@master
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -110,22 +110,32 @@ jobs:
         run: |
           diagrid project use ${{secrets.DIAGRID_PROJECT}} --api-key ${{secrets.DIAGRID_API_KEY}}
 
-      #Retrieve apiTokens for all project services
-      - name: Retrieve apiToken for each service
+      # Retrieve apiTokens and URLs for all project services
+      - name: Retrieve apiToken for each service,http and grpc urls for the project
         run: |
           # Initialize an empty array for the final output
           json_array="[]"
+          
+          # Fetch the project details to extract http_url and grpc_url
+          diagrid_project_output=$(diagrid project get ${{secrets.DIAGRID_PROJECT}})
+          
+          # Extract the HTTP and GRPC URLs from the project output
+          http_url=$(echo "$diagrid_project_output" | grep -A 1 "http:" | grep "url:" | awk '{print $2}')
+          grpc_url=$(echo "$diagrid_project_output" | grep -A 1 "grpc:" | grep "url:" | awk '{print $2}')
+          
           for service in ./services/*/ ; do
             service_name=$(basename "$service")
+            
             # Fetch the Diagrid app identity information in JSON format
             # Error handling if diagrid appid get command fails
             if ! diagrid_output=$(diagrid appid get $service_name -o json 2>/dev/null); then
               echo "Error: Failed to retrieve Diagrid app identity for $service_name"
               continue  # Skip this service and move to the next one
             fi
+            
             # Extract the apiToken using jq from the Diagrid output
             api_token=$(echo $diagrid_output | jq -r '.status.apiToken')
-
+            
             # Check if apiToken is null or empty
             if [ -z "$api_token" ] || [ "$api_token" == "null" ]; then
               echo "Error: No valid apiToken found for $service_name"
@@ -133,15 +143,18 @@ jobs:
             fi
             
             echo "API Token for $service_name: $api_token"
-
-            # Create a JSON object with the service and apiToken
-            json_object=$(jq -n --arg service "$service_name" --arg apiToken "$api_token" \
-                          '{service: $service, apiToken: $apiToken}')
-
+            
+            # Create a JSON object with the service, apiToken, http_url, and grpc_url
+            json_object=$(jq -n --arg service "$service_name" \
+                               --arg apiToken "$api_token" \
+                               --arg http_url "$http_url" \
+                               --arg grpc_url "$grpc_url" \
+                               '{service: $service, apiToken: $apiToken, http_url: $http_url, grpc_url: $grpc_url}')
+            
             # Add the JSON object to the array
             json_array=$(echo $json_array | jq --argjson obj "$json_object" '. += [$obj]')
           done
-
+          
           # Save the JSON array to a file
           echo $json_array | jq . > cdk-infra/service_tokens.json
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
@@ -150,6 +163,7 @@ jobs:
           echo "$EOF" >> $GITHUB_OUTPUT
 
           cat cdk-infra/service_tokens.json
+
 
       - name: Upload service_tokens.json
         uses: actions/upload-artifact@v4
@@ -162,7 +176,7 @@ jobs:
         working-directory: ./cdk-infra
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@main
+        uses: aws-actions/configure-aws-credentials@master
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -245,26 +259,26 @@ jobs:
             alb_dns=$(aws elbv2 describe-load-balancers --names $alb_name --query "LoadBalancers[0].DNSName" --output text)
             echo "ALB DNS: $alb_dns"
             echo "Service name is : $service_name"
-
+  
             EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
             echo "alb_dns<<$EOF" >> $GITHUB_OUTPUT
             echo "$alb_dns" >> $GITHUB_OUTPUT
             echo "$EOF" >> $GITHUB_OUTPUT
-
-
+  
+  
             # Create a JSON object with the service and ALB DNS
             json_object=$(jq -n --arg service "$service_name" --arg alb_dns "$alb_dns" \
                           '{service: $service, url: $alb_dns}')
-
+  
             # Add the JSON object to the array
             json_array=$(echo $json_array | jq --argjson obj "$json_object" '. += [$obj]')
-
-
-
+  
+  
+  
           done
           # Save the JSON array to a file
           echo $json_array | jq . > alb_services.json
-
+  
           # Output the JSON array
           echo "JSON Array:"
           cat alb_services.json
@@ -275,17 +289,17 @@ jobs:
         run: |
           # Read the JSON array from the file
           json_array=$(cat alb_services.json)
-
+  
           # Loop through the array and extract service and alb_dns
           for row in $(echo "${json_array}" | jq -r '.[] | @base64'); do
               _jq() {
                 echo ${row} | base64 --decode | jq -r ${1}
               }
-
+  
               service=$(_jq '.service')
               alb_dns=$(_jq '.url')
               diagrid appid update $service --app-endpoint "http://$alb_dns" -w --api-key ${{secrets.DIAGRID_API_KEY}}
-
+  
               echo "Service: $service, ALB DNS: $alb_dns"
               
           done
@@ -318,7 +332,7 @@ jobs:
           npm install
         working-directory: ./cdk-graphql-stack
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@main
+        uses: aws-actions/configure-aws-credentials@master
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

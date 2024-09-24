@@ -15,8 +15,7 @@ ENV DAPR_APP_ID=read-receipts-service
 ENV DAPR_READ_RECEIPTS_TABLE=read-receipts-service-table
 ENV  DAPR_GROUP_SUBSCRIPTION_TOPIC=group-subscription-topic
 ENV DAPR_CLIENT_TIMEOUT_SECONDS=10
-ENV DAPR_GRPC_ENDPOINT=https://grpc-prj240898.api.cloud.diagrid.io:443
-ENV DAPR_HTTP_ENDPOINT=https://http-prj240898.api.cloud.diagrid.io
+
 
 # Keeps Python from buffering stdout and stderr to avoid situations where
 # the application crashes without emitting any logs due to buffering.
