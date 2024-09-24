@@ -79,7 +79,8 @@ frontend amplify application. But we'll talk about this later.
 
 ## How to deploy this app
 
-Create a fork of this github repository[INSERT_GITHUB_REPOSITORY_HERE].
+Create a fork of this github repository
+https://github.com/diagrid-labs/catalyst-reference-apps/tree/main.
 
 Navigate to the `Settings` menu of your fork. ![settings](./assets/settings.png)
 
@@ -95,7 +96,7 @@ Click on `Actions`.
 Click on the blue button `New repository secret` and add key-value pairs for
 each of these repository secrets.
 
-Assuming you created an AWS Access Key/secret in the prerequisite section.
+Assuming you created an AWS Access Key/secret in the prerequisites section.
 
 For the Diagrid API_KEY, assuming you've installed and logged into the diagrid
 CLI from the command line, run this command
