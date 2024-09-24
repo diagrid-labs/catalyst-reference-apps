@@ -38,7 +38,7 @@ export const useAuthStore = defineStore("auth", () => {
             userInput: {
               username: user.username,
               email: user.email,
-              profile_pic_url: `https://catalystgroupchatappe1ee8-dev.s3.amazonaws.com/public/users/${image.name}`,
+              profile_pic_url: `http://groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev.s3-website-us-east-1.amazonaws.com/public/users/${image.name}`,
             },
           },
         });
@@ -48,13 +48,14 @@ export const useAuthStore = defineStore("auth", () => {
         "group_chat_user",
         JSON.stringify(result.data.createUserAccount)
       );
-      // console.log(
-      //   "result.data.createUserAccount",
-      //   result.data.createUserAccount
-      // );
+      console.log(
+        "result.data.createUserAccount",
+        result.data.createUserAccount
+      );
 
       return { success: true, user: result.data.createUserAccount };
     } catch (error) {
+      console.log("result=====", error);
       return { success: false, error: error };
     }
   };

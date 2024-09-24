@@ -1,17 +1,19 @@
 projects:
-  Codegen Project:
-    schemaPath: schema.json
+  groupChatApiMicroservice:
+    schemaPath: src/graphql/schema.json
     includes:
-      - src/graphql/**/*.js
+      - src/graphql/**/*.ts
     excludes:
       - ./amplify/**
+      - src/types/amplify.ts
     extensions:
       amplify:
-        codeGenTarget: javascript
-        generatedFileName: ''
+        codeGenTarget: typescript
+        generatedFileName: src/types/amplify.ts
         docsFilePath: src/graphql
         region: us-east-1
         apiId: 5ytfjd2yqja6talzouq7wekgzq
-        frontend: javascript
-        framework: vue
         maxDepth: 2
+extensions:
+  amplify:
+    version: 3

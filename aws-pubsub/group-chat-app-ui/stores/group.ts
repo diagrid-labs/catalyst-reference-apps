@@ -24,17 +24,17 @@ export const useGroupStore = defineStore("group", () => {
   const client = generateClient();
   const groups: any = ref([
     {
-      id: "2lz7TZxwrxZTmoBnlOY3dFWdsIF",
+      id: "2mW5pKwNARgJrJ6VKnhoClNRHLP",
       group_name: "Catalyst",
-      creator_id: "2lz7IAKyenxf8Ih4Zw4xcAIPqti",
-      group_description: "Catalyst",
+      creator_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
+      group_description: "Catalyst group chat app",
       last_message: null,
       group_url:
-        "https://catalystgroupchatappe1ee8-dev.s3.amazonaws.com/public/groups/group_url_c6d24158-f5d5-4742-8170-f2e7903cfc91.png",
-      created_at: 1726171059,
+        "http://groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev.s3-website-us-east-1.amazonaws.com/public/groups/group_url_c6df9520-24d6-4bd8-87e3-cacc1bbb8d76.png",
+      created_at: 1727179672,
       members: [
         {
-          user_id: "2lz7IAKyenxf8Ih4Zw4xcAIPqti",
+          user_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
           role: "ADMIN",
           __typename: "Member",
         },
@@ -44,17 +44,16 @@ export const useGroupStore = defineStore("group", () => {
       __typename: "Group",
     },
     {
-      id: "2lz842oXmh2phWlnj8Wjm5Wqk3b",
+      id: "2mW66HEvS6v7Rkb5rsGFJ1jizGH",
       group_name: "Catalyst 2",
-      creator_id: "2lz7IAKyenxf8Ih4Zw4xcAIPqti",
-      group_description: "Catalyst 2",
+      creator_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
+      group_description: "Catalyst group description",
       last_message: null,
-      group_url:
-        "https://catalystgroupchatappe1ee8-dev.s3.amazonaws.com/public/groups/group_url_93004b44-5143-49c9-8cf9-e6845b76983c.png",
-      created_at: 1726171349,
+      group_url: "/profile.webp",
+      created_at: 1727179807,
       members: [
         {
-          user_id: "2lz7IAKyenxf8Ih4Zw4xcAIPqti",
+          user_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
           role: "ADMIN",
           __typename: "Member",
         },
@@ -64,17 +63,17 @@ export const useGroupStore = defineStore("group", () => {
       __typename: "Group",
     },
     {
-      id: "2lz8OwQjNvnYPmJgMyotDSBCHcg",
+      id: "2mW6G70CH5qoVN1PoimqvaBFBvZ",
       group_name: "Catalyst 3",
-      creator_id: "2lz7IAKyenxf8Ih4Zw4xcAIPqti",
-      group_description: "Catalyst 3",
+      creator_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
+      group_description: "Catalyst group description",
       last_message: null,
       group_url:
-        "https://catalystgroupchatappe1ee8-dev.s3.amazonaws.com/public/groups/group_url_96c92875-af92-42e7-b338-d29233984c1b.png",
-      created_at: 1726171515,
+        "http://groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev.s3-website-us-east-1.amazonaws.com/public/groups/group_url_5ca6f8c8-0660-496c-a98b-e0f8c2235e90.png",
+      created_at: 1727179886,
       members: [
         {
-          user_id: "2lz7IAKyenxf8Ih4Zw4xcAIPqti",
+          user_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
           role: "ADMIN",
           __typename: "Member",
         },
@@ -125,7 +124,7 @@ export const useGroupStore = defineStore("group", () => {
               group_name: group.group_name,
               creator_id: group.creator_id,
               group_description: group.group_description,
-              group_url: `https://catalystgroupchatappe1ee8-dev.s3.amazonaws.com/public/groups/${image.name}`,
+              group_url: `http://groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev.s3-website-us-east-1.amazonaws.com/public/groups/${image.name}`,
             },
           },
         });
