@@ -96,7 +96,40 @@ Click on `Actions`.
 Click on the blue button `New repository secret` and add key-value pairs for
 each of these repository secrets.
 
-Assuming you created an AWS Access Key/secret in the prerequisites section.
+Do a git push once you're done. If the everything was configured properly, your
+workflow should run and all 3 jobs completed successfully.
+
+Now, sign into your aws console, from the search bar, type `appsync`, navigate
+to your appsync console.
+
+![seach_appsync](./assets/search_appsync.png)
+
+You'll find a project named `groupChatApiMicroservice`
+![group_chat_project](./assets/group_chat.png)
+
+Click on the project, navigate to settings on the bottom left handside of the
+menu and make sure you have a valid api key.
+
+![appsync_settings](./assets/appsync_settings.png)
+![valid_api_key](./assets/valid_api_key.png)
+
+Navigate back to your project's home page by clicking the name of the project in
+the left menu. ![valid_api_key](./assets/project_name.png)
+
+Scroll to to the middle of the page and copy the command show in the screenshot
+below. It has this format
+
+```bash
+npx @aws-amplify/cli codegen add --apiId 5ytfjd2****** --region us-east-1
+```
+
+Next, navigate to the directory `group-chat-app-ui`, and run the following
+commands
+
+`npm install aws-amplify` `npm i` and the command you copied above.
+
+![valid_api_key](./assets/copy_command.png) Assuming you created an AWS Access
+Key/secret in the prerequisites section.
 
 For the Diagrid API_KEY, assuming you've installed and logged into the diagrid
 CLI from the command line, run this command
@@ -128,9 +161,9 @@ using the Application Load Balancer and then sets up these endpoints as public
 endpoints in your catalyst Apps. Corresponding code is inside the `cdk-infra`
 directory.
 
-The third job creates a realtime Appsync API as a single point of entry into
-your application, using each generated endpoint as an http
-datasource.Corresponding code is inside the `cdk-graphql-stack` directory.
+The third job creates a Appsync API as a single point of entry into your
+application, using each generated endpoint as http datasources. Corresponding
+code is inside the `cdk-graphql-stack` directory.
 
 ## Running Locally
 
