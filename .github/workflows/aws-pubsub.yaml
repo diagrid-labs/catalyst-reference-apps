@@ -75,7 +75,7 @@ jobs:
             if echo "$output" | grep -q "ResourceInUseException"; then
               echo "Table already exists for $table_name, continuing..."
               continue
-            elif [ exit_code -ne 0 ]; then
+            elif [ $exit_code -ne 0 ]; then
               echo "An error occurred while creating table $table_name: $output"
               exit 1
             fi
