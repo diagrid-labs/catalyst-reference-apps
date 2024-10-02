@@ -1,20 +1,28 @@
-# Create Diagrid(Catalyst) Project And Components
+# Prepare and deploy the group chat application solution
 
-Because this project has 6 services, each service will represent a Catalyst App
-Id.
+The group chat application is comprised of six microservices:
 
-Communication between services will be done through a pubsub connection that
-consist of SNS topics and SQS subscriptions. AWS SNS/SQS will be configured on
-demand by Catalyst.
+- User service
+- Group service
+- User group service
+- Message service
+- Typing indicator service
+- Read receipts service
 
-Each service will have a state for data storage and for this application, we'll
-be using AWS DynamoDB.
+Each microservice will have a corresponding App ID representation in Catalyst.
+
+The services communicate asynchronously through publish-subscribe messaging using the Catalyst Pub/Sub API. The API is configured to use AWS SNS topics and AWS SQS subscriptions for the messaging infrastructure. The SNS/SQS topics and subscriptions are created on-demand by Catalyst, therefore no upfront infra deployment is required.
+
+In addition, each service is instrumented to use the Catalyst State API for managing application state. The State API is configured to use AWS Dynamo DB.
 
 ![group](./assets/group_dk.png)
 
-## Project Directory Structure
+## Solution structure
 
-```
+The `.github` folder contains a Github Actions pipeline setup to automate the
+creation and configuration of all necessary Catalyst and AWS resources.
+
+```bash
 |catalyst-reference-apps
 |-.github
    |--workflows
@@ -28,149 +36,160 @@ be using AWS DynamoDB.
 |-readme.md
 ```
 
-The `.github` folder contains a Github Actions pipeline setup to automate the
-creation and configuration of this project, alongside all it's components.
+The Github workflow includes three stages:
 
-The workflow is broken down into 3 jobs.
+### 1. configure-diagrid-resources
 
-### setup-diagrid-project
+The first stage of the pipeline deploys everything your application needs to interact with the Catalyst APIs. This includes:
 
-This job
-
-- Creates a new Diagrid Catalyst project called `group-chat-microservices` with
-  6 Catalyst apps.
-- Configures a Dynamodb state for each Catalyst App. Meaning 6 Dynamodb States.
-- Creates a single pubsub (AWS SQS/SNS) for all the states.
-- Configures a subscription topic for catalyst apps to publish and subscribe to.
+- Creating six App IDs, one for each microservice in the group chat application
+- Creating an AWS Dynamo DB instance and the respective state components for each Catalyst App
+- Creating an AWS SNS/SQS Pub/Sub component
+- Creating Pub/Sub topic subscriptions to ensure the Catalyst apps can publish and/or subscribe to messages
 
 ### 2. upload-to-ecs
 
-This job
+The second stage of the pipeline deploys each application service to AWS Elastic Container Service using the AWS CDK with the approriate Catalyst environment variables configured. This includes:
 
-- Retrieves the Diagrid Project variables such as `apitoken` for each catalyst
-  app, and also the `http_url` and `grpc_url` which will be passed in as
-  Environment Variables when creating Fargate Tasks for each service in
-  ECS(Elastic Container Service).
+- Retrieving the Catalyst project configuration settings such as:
+  - `DAPR_API_TOKEN` for each catalyst app
+  - `DAPR_HTTP_ENDPOINT` and `DAPR_GRPC_ENDPOINT`
 
-- Uploads a docker image for each catalyst app(service) to Amazon Elastic
-  Container Registry(ECR)
-- Installs A CDK project alongside some dependencies
+- Uploading docker images for each service to AWS Elastic Container Registry (ECR)
 
-- Creates a VPC(Virtual Private Cloud) configuration with subnets, availability
-  zones and VPC Logs for an ECS cluster.
-- Configures an Amazon Elastic Container Service(ECS) cluster and uploads each
-  ECR image as a Fargate while passing in the with individual Application Load
-  Balancers(ALB).
-- Gets the Domain Name Service(DNS) for each ALB and adds them as a public
-  endpoint to each Catalyst App.
+- Installing a CDK project alongside some dependencies
+
+- Creating AWS resources such as:  
+  - A Virtual Private Cloud (VPC) configuration with subnets, availability zones and VPC Logs for an ECS cluster
+  - An AWS Elastic Container Service (ECS) cluster
+  - Fargate applications with associated Application Load Balancers (ALB)
+
+- Configuring Catalyst App Endpoints by retrieving the ALB endpoints for each fargate instance and adding them to their respective Catalyst App IDs.
 
 ### 3. deploy-graphql-cdk-stack
 
-This job
+The third stage of the pipeline deploys each application service to AWS Elastic Container Service using the AWS CDK with the approriate Catalyst environment variables configured. This includes:
 
 - Installs CDK and accompanying dependencies.
-- Grabs all ALB DNS for each service and passes them as a json file to a CDK
-  project.
-- Deploys CDK Project and generates an endpoint which can be used to perform
-  `query`, `mutation` and `subscription` operations on the underlying data.
+- Retrieves the ALB DNS for each service and passes them as a JSON file to a CDK
+  project
+- Deploys the CDK Project and generates an endpoint which can be used to perform
+  `query`, `mutation` and `subscription` operations on the underlying data
 
-The generated endpoint will also be used to configure the group chat apps
-frontend amplify application, which we'll cover later
+The generated endpoint will also be used to configure the frontend amplify application, which will be covered later on.
 
-## Deploy
+## Preparing the pipeline
 
-Create a fork of this github repository
-https://github.com/diagrid-labs/catalyst-reference-apps/tree/main.
+In order to deploy Catalyst resources from the pipeline, you will need a Catalyst project & a generated API token. 
 
-Navigate to the `Settings` menu of your fork. ![settings](./assets/settings.png)
+1. Login to Catalyst
 
-Scroll down to the bottom left hand side of the screen and click on
-`Secrets and Variables`.
+    ```bash
+    diagrid login
+    ```
 
-![secrets_and_variables](./assets/secrets_variables.png)
+1. Set the appropriate Diagrid organization if you have more than one
 
-Click on `Actions`.
+    ```bash
+    diagrid orgs use [your-org-name]
+    ```
 
-![actions](./assets/actions.png).
+1. Select a unique project name for your Catalyst project 
 
-Click on the blue button `New repository secret` and add key-value pairs for
-each of these repository secrets.
+    ```bash
+    export DIAGRID_PROJECT="group-chat-app"
+    ```
 
-For the Diagrid API_KEY, assuming you've installed and logged into the diagrid
-CLI from the command line, run this command
+1. Create a Catalyst project
 
-```bash
+    ```bash
+    diagrid project create $DIAGRID_PROJECT
+    ```
 
-diagrid apikey create --name [ENTER NAME OF API KEY] --role  cra.diagrid:admin
+1. Create a Catalyst project
 
-```
+    ```bash
+    diagrid project use $DIAGRID_PROJECT
+    ```
 
-Replace `[ENTER NAME OF API KEY]` with any name of your choice.
+1. Create an API key which can be used by the pipeline when making Catalyst management API commands and store in an environment variable
 
-For the `DIAGRID_PROJECT` , use this `group-chat-microservices`
+    ```bash
+    diagrid apikey create --name catalyst-api-key --role  cra.diagrid:admin
+    ```
 
-- AWS_ACCESS_KEY_ID
-- AWS_ACCOUNT_ID
-- AWS_DEFAULT_REGION
-- AWS_SECRET_ACCESS_KEY
-- DIAGRID_API_KEY
-- DIAGRID_PROJECT
+    ```bash
+    export CATALYST_API_KEY=[your-token-value]
+    ```
 
-Do a git push once you're done. If the everything was configured properly, your
-workflow should run and all 3 jobs completed successfully.
+## Deploying the solution
 
-Now, sign into your aws console, from the search bar, type `appsync`, navigate
-to your appsync console.
+1. Create your own fork of this [repo](https://github.com/diagrid-labs/catalyst-reference-apps/tree/main).
+1. Navigate to the `Settings` menu within your fork.
+  ![settings](./assets/settings.png)
+1. Select `Secrets and Variables` from the left-hand menu.
+  ![secrets_and_variables](./assets/secrets_variables.png)
+1. Click on `Actions`.
+1. Select `New repository secret` and add the following sensitive values:
+    - AWS_ACCESS_KEY_ID
+    - AWS_SECRET_ACCESS_KEY
+    - AWS_ACCOUNT_ID
+    - AWS_DEFAULT_REGION
+    - DIAGRID_API_KEY
+1. Select `new respository variable` and add the following values
+    - AWS_DEFAULT_REGION
+    - DIAGRID_PROJECT
 
-![search_appsync](./assets/search_appsync.png)
+Once you're ready, run the pipeline. If the everything is configured properly, your workflow should run to completion successfully.
 
-You'll find a project named `groupChatApiMicroservice`
-![group_chat_project](./assets/group_chat.png)
+### Deploying the UI using AWS Amplify
 
-Click on the project, navigate to settings on the bottom left handside of the
-menu and grab the keys below.
+1. Sign in to the AWS console and navigate to the `AWS AppSync` resource using the search function.
+    ![search_appsync](./assets/search_appsync.png)
 
-```
-  "aws_appsync_graphqlEndpoint": [GRAPHQL_ENDPOINT],
-  "aws_appsync_region": "us-east-1",
-  "aws_appsync_authenticationType": "API_KEY",
-  "aws_appsync_apiKey": "da2-**************",
-```
+2.Select `groupChatApp`, select `Settings` in the left-hand side bar, and copy the following details:
 
-![appsync_settings](./assets/appsync_settings.png)
-![valid_api_key](./assets/valid_api_key.png)
+    ```json
+        "aws_appsync_graphqlEndpoint": [GRAPHQL_ENDPOINT],
+        "aws_appsync_region": "us-east-1",
+        "aws_appsync_authenticationType": "API_KEY",
+        "aws_appsync_apiKey": "da2-**************",
+    ```
 
 
-Navigate back to your project's home page by clicking the name of the project in
-the left menu. ![valid_api_key](./assets/project_name.png)
+3.Navigate back to your and find the codegen instructions in the middle of the project page.
+  ![valid_api_key](./assets/copy_command.png)
 
-Scroll to the middle of the page and copy the command shown in the screenshot
-below. ![valid_api_key](./assets/copy_command.png)
 
-Make sure you change the `--appId`
+1. Copy the command, navigate to the directory, `../aws-pubsub/group-chat-app-ui/`, and run the following, followed by the codegen command.
 
-```bash
-npx @aws-amplify/cli codegen add --apiId 5ytfjd2****** --region us-east-1
-```
 
-Next,from your IDE, navigate to the directory
-`../aws-pubsub/group-chat-app-ui/`, and run the following commands
+    ```bash
+    npm install aws-amplify
+    npm i
+    ```
 
-`npm install aws-amplify`
+1. Initialize a new amplify application.
 
-`npm i` and the command you copied above.
+    ```bash
+    amplify init 
+    ```
 
-`amplify init` to initialize a new amplify application.
+1. Add Auth and Storage.
 
-You'll also have to add 2 amplify categories.
+    Run the command `amplify add auth` and follow the prompts. Please view the
+    screenshot below
 
-- Auth
-- Storage.
+    ![amplify auth](../docs/assets/amplify_auth.png)
 
-Run the command `amplify add auth` and follow the prompts. Please view the
-screenshot below
+    Run the command `amplify add storage` and follow the prompts as show on the
+    screenshot.
 
-![amplify auth](../docs/assets/amplify_auth.png)
+    ![amplify storage](../docs/assets/amplify_storage.png)
+
+1. Finally, run the command
+
+    `amplify push` to push the application and create cloud resources.
 
 Run the command `amplify add storage and follow the prompts as show on the
 screenshot.
@@ -242,3 +261,6 @@ export GROUP_CHAT_MICROSERVICES=group-chat-microservices
 
 Then run the command `python run.py` to install and configure your diagrid
 project and components
+
+> Note: You can run the application locally, using the command `npm run dev` or follow this [guide](https://docs.amplify.aws/vue/start/quickstart/) to deploy the application to the cloud.
+
