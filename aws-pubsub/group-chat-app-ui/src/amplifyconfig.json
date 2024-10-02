@@ -1,9 +1,9 @@
 {
   "aws_project_region": "us-east-1",
-  "aws_appsync_graphqlEndpoint": "https://not36cqy2rgpjaptydzztst3ma.appsync-api.us-east-1.amazonaws.com/graphql",
+  "aws_appsync_graphqlEndpoint": "ADD GRAPHQL ENDPOINT HERE",
   "aws_appsync_region": "us-east-1",
   "aws_appsync_authenticationType": "API_KEY",
-  "aws_appsync_apiKey": "da2-f5rec2nrlbf3ffkyzdj2w7a3am",
+  "aws_appsync_apiKey": "ADD VALID API KEY HERE",
   "aws_cognito_identity_pool_id": "us-east-1:627cb5d3-ecaf-4fa1-a754-545144620488",
   "aws_cognito_region": "us-east-1",
   "aws_user_pools_id": "us-east-1_ak4Wv1FF4",

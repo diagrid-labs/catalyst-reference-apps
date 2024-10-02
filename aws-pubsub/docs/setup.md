@@ -140,41 +140,11 @@ menu and grab the keys below.
 ![appsync_settings](./assets/appsync_settings.png)
 ![valid_api_key](./assets/valid_api_key.png)
 
-Once you've gotten them, navigate to the directory
-`../aws-pubsub/group-chat-app-ui/src`. Open up the file `amplifyconfig.json` and
-add the key-value pairs to the file
-
-```json
-{
-  "aws_project_region": "us-east-1",
-  "aws_appsync_graphqlEndpoint": "https:******",
-  "aws_appsync_region": "us-east-1",
-  "aws_appsync_authenticationType": "API_KEY",
-  "aws_appsync_apiKey": "da2-********",
-  "aws_cognito_identity_pool_id": "us-east-1:627cb5d3-ecaf-4fa1-a754-545144620488",
-  "aws_cognito_region": "us-east-1",
-  "aws_user_pools_id": "us-east-1_ak4Wv1FF4",
-  "aws_user_pools_web_client_id": "4heoc8i46cacpm6nimj564hd23",
-  "oauth": {},
-  "aws_cognito_username_attributes": ["EMAIL"],
-  "aws_cognito_social_providers": [],
-  "aws_cognito_signup_attributes": ["EMAIL"],
-  "aws_cognito_mfa_configuration": "OFF",
-  "aws_cognito_mfa_types": ["SMS"],
-  "aws_cognito_password_protection_settings": {
-    "passwordPolicyMinLength": 8,
-    "passwordPolicyCharacters": []
-  },
-  "aws_cognito_verification_mechanisms": ["EMAIL"],
-  "aws_user_files_s3_bucket": "groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev",
-  "aws_user_files_s3_bucket_region": "us-east-1"
-}
-```
 
 Navigate back to your project's home page by clicking the name of the project in
 the left menu. ![valid_api_key](./assets/project_name.png)
 
-Scroll to to the middle of the page and copy the command shown in the screenshot
+Scroll to the middle of the page and copy the command shown in the screenshot
 below. ![valid_api_key](./assets/copy_command.png)
 
 Make sure you change the `--appId`
@@ -206,6 +176,42 @@ Run the command `amplify add storage and follow the prompts as show on the
 screenshot.
 
 ![amplify storage](../docs/assets/amplify_storage.png)
+
+Navigate to the directory
+`../aws-pubsub/group-chat-app-ui/src`. Open up the file `amplifyconfig.json` and
+add the key-value pairs you saved earlier to the file.
+
+Below is a sample of how your `amplifyconfig.json` file should look like.
+
+```json
+{
+ 
+  "aws_project_region": "us-east-1",
+  "aws_appsync_graphqlEndpoint": "ADD GRAPHQL ENDPOINT HERE",
+  "aws_appsync_region": "us-east-1",
+  "aws_appsync_authenticationType": "API_KEY",
+  "aws_appsync_apiKey": "ADD VALID API KEY HERE",
+  "aws_cognito_identity_pool_id": "us-east-1:627cb5d3-ecaf-4fa1-a754-545144620488",
+  "aws_cognito_region": "us-east-1",
+  "aws_user_pools_id": "us-east-1_ak4Wv1FF4",
+  "aws_user_pools_web_client_id": "4heoc8i46cacpm6nimj564hd23",
+  "oauth": {},
+  "aws_cognito_username_attributes": ["EMAIL"],
+  "aws_cognito_social_providers": [],
+  "aws_cognito_signup_attributes": ["EMAIL"],
+  "aws_cognito_mfa_configuration": "OFF",
+  "aws_cognito_mfa_types": ["SMS"],
+  "aws_cognito_password_protection_settings": {
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": []
+  },
+  "aws_cognito_verification_mechanisms": ["EMAIL"],
+  "aws_user_files_s3_bucket": "S3 Bucket",
+  "aws_user_files_s3_bucket_region": "us-east-1"
+
+
+}
+```
 
 Finally, run the command
 
