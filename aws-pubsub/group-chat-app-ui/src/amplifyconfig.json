@@ -1,13 +1,13 @@
 {
   "aws_project_region": "us-east-1",
-  "aws_appsync_graphqlEndpoint": "ADD GRAPHQL ENDPOINT HERE",
+  "aws_cognito_identity_pool_id": "us-east-1:678659cf-48ea-45b9-a0e6-6a8b853666c0",
+  "aws_appsync_graphqlEndpoint": "https://not36cqy2rgpjaptydzztst3ma.appsync-api.us-east-1.amazonaws.com/graphql",
   "aws_appsync_region": "us-east-1",
   "aws_appsync_authenticationType": "API_KEY",
-  "aws_appsync_apiKey": "ADD VALID API KEY HERE",
-  "aws_cognito_identity_pool_id": "us-east-1:627cb5d3-ecaf-4fa1-a754-545144620488",
+  "aws_appsync_apiKey": "da2-f5rec2nrlbf3ffkyzdj2w7a3am",
   "aws_cognito_region": "us-east-1",
-  "aws_user_pools_id": "us-east-1_ak4Wv1FF4",
-  "aws_user_pools_web_client_id": "4heoc8i46cacpm6nimj564hd23",
+  "aws_user_pools_id": "us-east-1_t3ubbYIcS",
+  "aws_user_pools_web_client_id": "1i9d4jp241g2pis0tlpnnu4ne1",
   "oauth": {},
   "aws_cognito_username_attributes": ["EMAIL"],
   "aws_cognito_social_providers": [],
@@ -19,6 +19,6 @@
     "passwordPolicyCharacters": []
   },
   "aws_cognito_verification_mechanisms": ["EMAIL"],
-  "aws_user_files_s3_bucket": "groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev",
+  "aws_user_files_s3_bucket": "groupchatappuib50e268adf484b7788fa0651e96b3a836eed8-dev",
   "aws_user_files_s3_bucket_region": "us-east-1"
 }
