@@ -38,7 +38,7 @@ jobs:
 
             # Temporarily disable bash -e for the diagrid command
             set +e
-            output=$(diagrid appid create -p test-aws "$service_name" 2>&1)
+            output=$(diagrid appid create -p ${{vars.DIAGRID_PROJECT}} "$service_name" 2>&1)
             exit_code=$?
             set -e
 
