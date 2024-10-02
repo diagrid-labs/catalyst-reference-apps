@@ -103,7 +103,7 @@ export const useGroupStore = defineStore("group", () => {
               group_name: group.group_name,
               creator_id: group.creator_id,
               group_description: group.group_description,
-              group_url: `http://amplify-groupchatappui-dev-cd7ce-deployment.s3-website-us-east-1.amazonaws.com/public/groups/${image.name}`,
+              group_url: `http://groupchatappui637f5aee4a1a423ca744782861324eeacd7ce-dev.s3-website-us-east-1.amazonaws.com/public/groups/${image.name}`,
             },
           },
         });

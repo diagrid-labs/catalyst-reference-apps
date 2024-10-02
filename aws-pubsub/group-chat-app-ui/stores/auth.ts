@@ -38,7 +38,7 @@ export const useAuthStore = defineStore("auth", () => {
             userInput: {
               username: user.username,
               email: user.email,
-              profile_pic_url: `http://amplify-groupchatappui-dev-cd7ce-deployment.s3-website-us-east-1.amazonaws.com/public/users/${image.name}`,
+              profile_pic_url: `http://groupchatappui637f5aee4a1a423ca744782861324eeacd7ce-dev.s3-website-us-east-1.amazonaws.com/public/users/${image.name}`,
             },
           },
         });
