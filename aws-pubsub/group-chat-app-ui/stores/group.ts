@@ -24,36 +24,16 @@ export const useGroupStore = defineStore("group", () => {
   const client = generateClient();
   const groups: any = ref([
     {
-      id: "2mW5pKwNARgJrJ6VKnhoClNRHLP",
-      group_name: "Catalyst",
-      creator_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
-      group_description: "Catalyst group chat app",
-      last_message: null,
-      group_url:
-        "http://groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev.s3-website-us-east-1.amazonaws.com/public/groups/group_url_c6df9520-24d6-4bd8-87e3-cacc1bbb8d76.png",
-      created_at: 1727179672,
-      members: [
-        {
-          user_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
-          role: "ADMIN",
-          __typename: "Member",
-        },
-      ],
-      messages: [],
-      updated_at: null,
-      __typename: "Group",
-    },
-    {
-      id: "2mW66HEvS6v7Rkb5rsGFJ1jizGH",
-      group_name: "Catalyst 2",
-      creator_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
-      group_description: "Catalyst group description",
+      id: "2mtnDVXGNYiKhBUjdMZWLAbPcDK",
+      group_name: "Catalyst group 5",
+      creator_id: "2mtjFe2fzhfYHnqSC4OlRX2UZRv",
+      group_description: "Catalyst application",
       last_message: null,
       group_url: "/profile.webp",
-      created_at: 1727179807,
+      created_at: 1727904620,
       members: [
         {
-          user_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
+          user_id: "2mtjFe2fzhfYHnqSC4OlRX2UZRv",
           role: "ADMIN",
           __typename: "Member",
         },
@@ -63,17 +43,16 @@ export const useGroupStore = defineStore("group", () => {
       __typename: "Group",
     },
     {
-      id: "2mW6G70CH5qoVN1PoimqvaBFBvZ",
-      group_name: "Catalyst 3",
-      creator_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
-      group_description: "Catalyst group description",
+      id: "2mtnNNHms0oWL30mL4zHttzllyg",
+      group_name: "launch celebration chat",
+      creator_id: "2mtjFe2fzhfYHnqSC4OlRX2UZRv",
+      group_description: "Launch Celebration Chat",
       last_message: null,
-      group_url:
-        "http://groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev.s3-website-us-east-1.amazonaws.com/public/groups/group_url_5ca6f8c8-0660-496c-a98b-e0f8c2235e90.png",
-      created_at: 1727179886,
+      group_url: "/profile.webp",
+      created_at: 1727904698,
       members: [
         {
-          user_id: "2mW55LA6GctrtkyHUd5P1kDzMqc",
+          user_id: "2mtjFe2fzhfYHnqSC4OlRX2UZRv",
           role: "ADMIN",
           __typename: "Member",
         },
