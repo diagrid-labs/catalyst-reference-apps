@@ -144,10 +144,32 @@ Once you're ready, run the pipeline. If the everything is configured properly, y
 
 ### Deploying the UI using AWS Amplify
 
+1. Navigate to the directory, `../aws-pubsub/group-chat-app-ui/`, and run the following:
+
+    ```bash
+    npm install -g @aws-amplify/cli
+    npm i
+    ```
+
 1. Sign in to the AWS console and navigate to the `AWS AppSync` resource using the search function.
     ![search_appsync](./assets/search_appsync.png)
+  
+1. Find the codegen instructions in the middle of the project page. Copy the command and run in the root directory of your frontend solution.
+  ![valid_api_key](./assets/copy_command.png)
+
+[TODO: Insert picture for expected inputs]
+
+1. Initialize a new amplify application which will generate an `amplifyconfig.js` file.
+
+    ```bash
+    amplify init 
+    ```
+
+[TODO: Insert picture for expected inputs]
 
 1. Select `groupChatApp`, select `Settings` in the left-hand side bar, and copy the following details:
+    
+    [TODO: add screenshot with highlights]
 
     ```json
         "aws_appsync_graphqlEndpoint": [GRAPHQL_ENDPOINT],
@@ -156,9 +178,12 @@ Once you're ready, run the pipeline. If the everything is configured properly, y
         "aws_appsync_apiKey": "da2-**************",
     ```
 
-1. Navigate to the directory `../aws-pubsub/group-chat-app-ui/src`. Open up the file `amplifyconfig.json` and add the key-value pairs you just retrieved to the file
+1. Navigate to the directory `../aws-pubsub/group-chat-app-ui/src`. Open up the file `amplifyconfig.json` and add the key-value pairs you just retrieved to top of the file.
 
-    ```json
+> NOTE: This configuration allows the amplify applicaiton to access the GraphQL API
+
+   ```json
+
       {
         "aws_project_region": "us-east-1",
         "aws_appsync_graphqlEndpoint": "https:******",
@@ -183,25 +208,9 @@ Once you're ready, run the pipeline. If the everything is configured properly, y
         "aws_user_files_s3_bucket": "groupchatappui74fbc3d555e14d0ca57de2498f65e17b86d11-dev",
         "aws_user_files_s3_bucket_region": "us-east-1"
       }
-    ```
+   ```
 
-1. Navigate back to your and find the codegen instructions in the middle of the project page.
-  ![valid_api_key](./assets/copy_command.png)
-
-1. Copy the command, navigate to the directory, `../aws-pubsub/group-chat-app-ui/`, and run the following, followed by the codegen command.
-
-    ```bash
-    npm install aws-amplify
-    npm i
-    ```
-
-1. Initialize a new amplify application.
-
-    ```bash
-    amplify init 
-    ```
-
-1. Add Auth and Storage.
+1. Add Auth and Storage
 
     Run the command `amplify add auth` and follow the prompts. Please view the
     screenshot below
@@ -213,8 +222,8 @@ Once you're ready, run the pipeline. If the everything is configured properly, y
 
     ![amplify storage](../docs/assets/amplify_storage.png)
 
-1. Finally, run the command
+1. Run the command `amplify push` to create the Amplify cloud resource dependencies.
 
-    `amplify push` to push the application and create cloud resources.
+1. Finally, Run the application locally using the command `npm run dev`.
 
-> Note: You can run the application locally, using the command `npm run dev` or follow this [guide](https://docs.amplify.aws/vue/start/quickstart/) to deploy the application to the cloud.
+    > Tip: Follow this [guide](https://docs.amplify.aws/vue/start/quickstart/) to deploy the fronetend amplify application to the cloud.

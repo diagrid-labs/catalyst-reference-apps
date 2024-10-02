@@ -97,7 +97,7 @@ export class CdkInfraStack extends cdk.Stack {
         {
           image: ecs.ContainerImage.fromEcrRepository(serviceRepo, "latest"),
           environment: {
-            DAPR_API_TOKEN: service.apiToken,
+            DAPR_API_TOKEN: service.api_token,
             DAPR_GRPC_ENDPOINT: service.grpc_url,
              DAPR_HTTP_ENDPOINT: service.http_url
           },

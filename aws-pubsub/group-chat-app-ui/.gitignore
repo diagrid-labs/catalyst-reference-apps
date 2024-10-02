@@ -23,6 +23,12 @@ logs
 .env.*
 !.env.example
 
+# amplify generated files
+amplifyconfig.json
+API.ts
+src/graphql/*
+schema.json
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*

@@ -13,7 +13,7 @@
     "@aws-amplify/cli": "^12.12.6",
     "@nuxt/ui": "^2.18.4",
     "@pinia/nuxt": "^0.5.4",
-    "aws-amplify": "^6.6.0",
+    "aws-amplify": "^6.6.3",
     "nuxt": "^3.13.0",
     "pinia": "^2.2.2",
     "uuid": "^10.0.0",
