@@ -42,6 +42,7 @@ Generated\ Files/
 diagrid-venv/
 cdk-graphql-stack/cdk.out/
 cdk-infra/cdk.out/
+.graphqlconfig.yml
 
 !jest.config.js
 *.d.ts
