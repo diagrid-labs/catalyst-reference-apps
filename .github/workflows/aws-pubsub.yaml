@@ -15,7 +15,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
       # Install Diagrid CLI
       - name: Install Diagrid CLI
         run: |
@@ -40,7 +40,7 @@ jobs:
 
             # Temporarily disable bash -e for the diagrid command
             set +e
-            output=$(diagrid appid create -p test-aws "$service_name" 2>&1)
+            output=$(diagrid appid create -p ${{vars.DIAGRID_PROJECT}} "$service_name" 2>&1)
             exit_code=$?
             set -e
 
@@ -70,18 +70,19 @@ jobs:
               --attribute-definitions AttributeName=key,AttributeType=S \
               --key-schema AttributeName=key,KeyType=HASH \
               --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 2>&1)
+            exit_code=$?
             set -e
             
             # Check if the error is about the table already existing
             if echo "$output" | grep -q "ResourceInUseException"; then
               echo "Table already exists for $table_name, continuing..."
               continue
-            elif [ $? -ne 0 ]; then
+            elif [ $exit_code -ne 0 ]; then
               echo "An error occurred while creating table $table_name: $output"
               exit 1
             fi
             
-            sleep 10
+            sleep 5
           done
 
       - name: Check App Status
@@ -95,7 +96,7 @@ jobs:
         run: |
           # Temporarily disable bash -e for the component create command
           set +e
-          output=$(diagrid component create aws-pubsub --type pubsub.aws.snssqs --metadata accessKey=${{ secrets.AWS_ACCESS_KEY_ID }} --metadata secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }} --metadata awsRegion=${{ secrets.AWS_DEFAULT_REGION }} --project ${{ vars.DIAGRID_PROJECT }})
+          output=$(diagrid component create aws-pubsub --type pubsub.aws.snssqs --metadata accessKey=${{ secrets.AWS_ACCESS_KEY_ID }} --metadata secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }} --metadata awsRegion=${{ vars.AWS_DEFAULT_REGION }} --project ${{ vars.DIAGRID_PROJECT }})
           set -e
 
           # Check if the output contains "Resource already exists"
@@ -115,7 +116,7 @@ jobs:
             
              # Temporarily disable bash -e for the diagrid command
             set +e
-            output=$(diagrid component create $table_name --type state.aws.dynamodb --metadata accessKey=${{ secrets.AWS_ACCESS_KEY_ID }} --metadata secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }} --metadata awsRegion=${{ secrets.AWS_DEFAULT_REGION }} --metadata table=$table_name --scopes $service_name --project ${{vars.DIAGRID_PROJECT}})
+            output=$(diagrid component create $table_name --type state.aws.dynamodb --metadata accessKey=${{ secrets.AWS_ACCESS_KEY_ID }} --metadata secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }} --metadata awsRegion=${{ vars.AWS_DEFAULT_REGION }} --metadata table=$table_name --scopes $service_name --project ${{vars.DIAGRID_PROJECT}})
             exit_code=$?
             set -e
 
@@ -128,7 +129,7 @@ jobs:
               exit 1
             fi
             
-            sleep 10
+            sleep 5
 
           done
 
@@ -244,7 +245,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
       # Download the service_tokens.json artifact
       - name: Download service_tokens.json
@@ -252,6 +253,7 @@ jobs:
         with:
           name: service_tokens
           path: ./aws-pubsub/cdk-infra/
+
       - name: Synthesize CDK Stack
         run: |
           json_array=$(cat service_tokens.json)
@@ -261,6 +263,7 @@ jobs:
           cat tokens.json
           cdk synth -c configfile=tokens.json
         working-directory: ./aws-pubsub/cdk-infra
+
       - name: Bootstrap CDK Stack
         run: |
           json_array=$(cat service_tokens.json)
@@ -289,7 +292,7 @@ jobs:
         run: |
           for service in ./aws-pubsub/services/*/ ; do
             service_name=$(basename "$service")
-            ecr_repo="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{secrets.AWS_DEFAULT_REGION}}.amazonaws.com/$service_name"
+            ecr_repo="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{vars.AWS_DEFAULT_REGION}}.amazonaws.com/$service_name"
             echo "Building Docker image for $service_name"
             docker build -t "$ecr_repo:latest" "$service"
             echo "Pushing Docker image to ECR for $service_name"
@@ -306,14 +309,14 @@ jobs:
           cdk deploy CdkInfraStack --require-approval=never -c configfile=service_tokens.json
         working-directory: ./aws-pubsub/cdk-infra
 
-      - name: Update Cluster to get the most recent image
+      - name: Update fargate instances with most recent container images
         run: |
           for service in ./aws-pubsub/services/*/ ; do
             service_name=$(basename "$service")
             aws ecs update-service --cluster GROUP-CHAT-cluster --service $service_name --force-new-deployment
           done
 
-      - name: Retrieving the DNS for the services and updating the appIDs
+      - name: Retrieve DNS for the AWS ECS fargate instances
         run: |
           # Initialize an empty array
           json_array="[]"
@@ -329,15 +332,12 @@ jobs:
             echo "$alb_dns" >> $GITHUB_OUTPUT
             echo "$EOF" >> $GITHUB_OUTPUT
 
-
             # Create a JSON object with the service and ALB DNS
             json_object=$(jq -n --arg service "$service_name" --arg alb_dns "$alb_dns" \
                           '{service: $service, url: $alb_dns}')
 
             # Add the JSON object to the array
             json_array=$(echo $json_array | jq --argjson obj "$json_object" '. += [$obj]')
-
-
 
           done
           # Save the JSON array to a file
@@ -346,10 +346,11 @@ jobs:
           # Output the JSON array
           echo "JSON Array:"
           cat alb_services.json
+
       # Loop through the JSON array and extract values
-      - name:
-          Loop through the JSON array and extract ALB DNS and Service
-          name,update Catalyst API public Endpoint for each service
+
+      - name: Update Catalyst App IDs with AWS App Endpoints
+
         run: |
           # Read the JSON array from the file
           json_array=$(cat alb_services.json)
@@ -377,6 +378,7 @@ jobs:
           echo "$EOF" >> $GITHUB_OUTPUT
 
           cat ./aws-pubsub/cdk-graphql-stack/alb_services.json
+
       - name: Upload alb_services.json
         uses: actions/upload-artifact@v4
         with:
@@ -402,7 +404,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          aws-region: ${{ vars.AWS_DEFAULT_REGION }}
 
       - name: Retrieving the DNS for the services and updating the App IDs
         run: |
