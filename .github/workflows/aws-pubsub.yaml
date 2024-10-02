@@ -68,14 +68,14 @@ jobs:
               --attribute-definitions AttributeName=key,AttributeType=S \
               --key-schema AttributeName=key,KeyType=HASH \
               --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 2>&1)
+            exit_code=$?
             set -e
             
             # Check if the error is about the table already existing
             if echo "$output" | grep -q "ResourceInUseException"; then
               echo "Table already exists for $table_name, continuing..."
               continue
-            elif [ $? -ne 0 ]; then
-              echo "The error code is: $?"
+            elif [ exit_code -ne 0 ]; then
               echo "An error occurred while creating table $table_name: $output"
               exit 1
             fi
