@@ -224,11 +224,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: service_tokens
-          path: cdk-infra/service_tokens.json
+          path: ./aws-pubsub/cdk-infra/service_tokens.json
       - name: Install other dependencies
         run: |
           npm install
-        working-directory: ./cdk-infra
+        working-directory: ./aws-pubsub/cdk-infra
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
@@ -242,7 +242,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: service_tokens
-          path: cdk-infra/
+          path: ./aws-pubsub/cdk-infra/
       - name: Synthesize CDK Stack
         run: |
           json_array=$(cat service_tokens.json)
@@ -251,7 +251,7 @@ jobs:
           echo "Final JSON Array:"
           cat tokens.json
           cdk synth -c configfile=tokens.json
-        working-directory: ./cdk-infra
+        working-directory: ./aws-pubsub/cdk-infra
       - name: Bootstrap CDK Stack
         run: |
           json_array=$(cat service_tokens.json)
@@ -260,7 +260,7 @@ jobs:
           echo "Final JSON Array:"
           cat service_tokens.json
           cdk bootstrap -c configfile=service_tokens.json
-        working-directory: ./cdk-infra
+        working-directory: ./aws-pubsub/cdk-infra
 
       - name: Deploy repoStackName to AWS
         run: |
@@ -270,7 +270,7 @@ jobs:
           echo "Final JSON Array:"
           cat service_tokens.json
           cdk deploy repoStackName --require-approval=never -c configfile=service_tokens.json
-        working-directory: ./cdk-infra
+        working-directory: ./aws-pubsub/cdk-infra
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -295,7 +295,7 @@ jobs:
           echo "Final JSON Array:"
           cat service_tokens.json
           cdk deploy CdkInfraStack --require-approval=never -c configfile=service_tokens.json
-        working-directory: ./cdk-infra
+        working-directory: ./aws-pubsub/cdk-infra
 
       - name: Update Cluster to get the most recent image
         run: |
@@ -359,18 +359,18 @@ jobs:
               
           done
           # Save the JSON array to a file
-          echo $json_array | jq . > cdk-graphql-stack/alb_services.json
+          echo $json_array | jq . > ./aws-pubsub/cdk-graphql-stack/alb_services.json
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           echo "alb_services<<$EOF" >> $GITHUB_OUTPUT
           echo "$json_array" >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
 
-          cat cdk-graphql-stack/alb_services.json
+          cat ./aws-pubsub/cdk-graphql-stack/alb_services.json
       - name: Upload alb_services.json
         uses: actions/upload-artifact@v4
         with:
           name: alb_services
-          path: cdk-graphql-stack/alb_services.json
+          path: ./aws-pubsub/cdk-graphql-stack/alb_services.json
 
   deploy-graphql-cdk-stack:
     runs-on: ubuntu-latest
@@ -385,7 +385,7 @@ jobs:
       - name: Install other dependencies
         run: |
           npm install
-        working-directory: ./cdk-graphql-stack
+        working-directory: ./aws-pubsub/cdk-graphql-stack
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
         with:
@@ -393,7 +393,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
-      - name: Retrieving the DNS for the services and updating the appIDs
+      - name: Retrieving the DNS for the services and updating the App IDs
         run: |
           # Initialize an empty array
           json_array="[]"
@@ -432,7 +432,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: alb_services
-          path: cdk-graphql-stack/
+          path: ./aws-pubsub/cdk-graphql-stack/
       - name: Synthesize CdkGroupChatMicroserviceStack
         run: |
           json_array=$(cat alb_services.json)
@@ -441,7 +441,7 @@ jobs:
           echo "Final JSON Array:"
           cat tokens.json
           cdk synth -c configfile=tokens.json
-        working-directory: ./cdk-graphql-stack
+        working-directory: ./aws-pubsub/cdk-graphql-stack
       - name: Bootstrap CDK Stack
         run: |
           json_array=$(cat alb_services.json)
@@ -450,7 +450,7 @@ jobs:
           echo "Final JSON Array:"
           cat tokens.json
           cdk bootstrap -c configfile=tokens.json
-        working-directory: ./cdk-graphql-stack
+        working-directory: ./aws-pubsub/cdk-graphql-stack
 
       - name: Deploy CdkGroupChatMicroserviceStack to AWS
         run: |
@@ -460,4 +460,4 @@ jobs:
           echo "Final JSON Array:"
           cat tokens.json
           cdk deploy CdkGroupChatMicroserviceStack --require-approval=never -c configfile=tokens.json
-        working-directory: ./cdk-graphql-stack
+        working-directory: ./aws-pubsub/cdk-graphql-stack
