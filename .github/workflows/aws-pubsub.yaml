@@ -183,7 +183,7 @@ jobs:
             service_name=$(basename "$service")
             
             # Fetch the Diagrid App ID information in JSON format
-            # Error handling if App ID get command fails
+
             if ! diagrid_output=$(diagrid appid get $service_name -o json 2>/dev/null); then
               echo "Error: Failed to retrieve Diagrid App ID for $service_name"
               continue  # Skip this service and move to the next one
@@ -202,7 +202,7 @@ jobs:
             
             # Create a JSON object with the service, api_token, http_url, and grpc_url
             json_object=$(jq -n --arg service "$service_name" \
-                               --arg api_token" "$api_token" \
+                               --arg api_token "$api_token" \
                                --arg http_url "$http_url" \
                                --arg grpc_url "$grpc_url" \
                                '{service: $service, api_token: $api_token, http_url: $http_url, grpc_url: $grpc_url}')
