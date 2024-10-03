@@ -28,7 +28,11 @@
         >
           <div class="text-[14px] font-semibold">{{ group?.group_name }}</div>
           <div class="text-sm font-light text-text-primary">
-            <span v-if="typing" class="text-violet-500">typing...</span>
+            <span
+              v-if="typing?.status && typing?.id !== user?.id"
+              class="text-violet-500"
+              >typing...</span
+            >
             <span v-else> tap for group info</span>
           </div>
         </div>

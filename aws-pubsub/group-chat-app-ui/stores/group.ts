@@ -63,7 +63,7 @@ export const useGroupStore = defineStore("group", () => {
     },
   ]);
   const groupMessages = ref<any>([]);
-  const typingIndicatore = ref(false);
+  const typingIndicatore = ref<any>({ id: "", status: false });
   const group = ref<any>({
     group_name: "Group name",
     group_url: "/profile.webp",
@@ -179,7 +179,6 @@ export const useGroupStore = defineStore("group", () => {
           },
         },
       });
-      console.log("typing: ", result);
       return { success: true, result: result.data.addTypingIndicator };
     } catch (error) {
       console.log("error: ", error);
@@ -235,7 +234,14 @@ export const useGroupStore = defineStore("group", () => {
             message_content: newData.message_content,
             synced: true,
           };
-          groupMessages.value.push(new_object);
+
+          const index = groupMessages.value.findIndex(
+            (el: any) => el.id === new_object.id
+          );
+
+          if (index === -1) {
+            groupMessages.value.push(new_object);
+          }
         },
         error: (error) => console.warn("==== errr", error),
       });
@@ -267,9 +273,9 @@ export const useGroupStore = defineStore("group", () => {
           //   id: info.id,
           // };
 
-          typingIndicatore.value = info.typing;
+          typingIndicatore.value = { id: info.user_id, status: info.typing };
 
-          console.log("data222222", typingIndicatore.value);
+          // console.log("data222222", typingIndicatore.value);
         },
         error: (error) => console.warn("errr", error),
       });
