@@ -57,43 +57,6 @@
               </p>
             </div>
 
-            <div class="w-full">
-              <label
-                class="mb-2 block text-base font-bold tracking-wide text-gray-300"
-                for="name"
-              >
-                Profile picture
-              </label>
-
-              <div class="flex items-center w-full">
-                <div
-                  id="Image"
-                  class="mr-2 max-h-[50px] min-h-[50px] min-w-[50px] max-w-[50px] hover:cursor-pointer"
-                >
-                  <img
-                    :src="image"
-                    class="max-h-[45px] min-h-[45px] min-w-[45px] max-w-[45px] rounded-full object-cover p-[3px] text-violet-400 ring-[2px] ring-current"
-                  />
-                </div>
-                <div class="w-full relative">
-                  <Field
-                    type="file"
-                    name="group_url"
-                    class="text-gray-300 bg-deep border hover:cursor-pointer border-gray-300 w-full text-sm px-4 py-2.5 rounded-md outline-violet-600"
-                    :class="errors.group_url && 'border-red-500'"
-                    accept=".png, .jpeg, .jpg"
-                    @change="onChange"
-                  />
-                </div>
-              </div>
-              <p
-                v-if="errors.group_url"
-                class="mt-2 text-sm font-light text-red-500"
-              >
-                {{ errors.group_url }}
-              </p>
-            </div>
-
             <div class="mb-2 w-full">
               <label
                 class="mb-2.5 block font-bold tracking-wide text-gray-300"
@@ -163,21 +126,11 @@
         </Form>
       </UCard>
     </UModal>
-    <CropImage
-      :isOpen="crop"
-      :imageurl="image"
-      @cropped-image="croppedImage"
-      @close-modal="crop = false"
-    />
   </div>
 </template>
 <script setup lang="ts">
 import { Form, Field, configure } from "vee-validate";
 import * as yup from "yup";
-import { v4 as uuidv4 } from "uuid";
-import { type CreateGroupInput } from "~/src/types/amplify";
-import CropImage from "./CropImage.vue";
-import { type User } from "~/src/types/amplify";
 
 configure({
   validateOnBlur: true,
@@ -202,10 +155,7 @@ const schema = yup.object({
   group_description: yup.string().required("Required!"),
 });
 
-const crop = ref(false);
-const data = ref(false);
 const image = ref("/profile.webp");
-const croppedImg: any = ref("");
 const pending = ref(false);
 const isOpen = ref(false);
 const isLoading = ref(false);
@@ -215,7 +165,7 @@ const initialValues = ref({
   group_name: "",
   creator_id: user?.id,
   group_description: "",
-  group_url: "",
+  group_url: "/profile.webp",
 });
 
 onMounted(async () => {
@@ -239,42 +189,6 @@ onMounted(async () => {
   }
 });
 
-const croppedImage = async (data: any) => {
-  image.value = data;
-  crop.value = false;
-  const img = await fetchImage(data);
-  if (img) {
-    croppedImg.value = img;
-  }
-};
-
-const fetchImage = async (imageUrl: string) => {
-  const uuid = uuidv4();
-  if (process.client) {
-    let response;
-    response = await fetch(imageUrl);
-    response = await response.blob();
-    response = new File([response], `group_url_${uuid}.png`);
-    return response;
-  }
-};
-
-const toBase64 = (file: any) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
-
-const onChange = async (event: any) => {
-  const img = await toBase64(event.target.files[0]);
-  image.value = img as string;
-  data.value = true;
-  crop.value = true;
-};
-
 const showModal = () => {
   isOpen.value = !isOpen.value;
 };
@@ -282,15 +196,9 @@ const showModal = () => {
 const handleSubmit = async (inputs: any) => {
   pending.value = true;
   if (props.action != "update") {
-    let new_img = image.value;
-    if (croppedImg.value != "") {
-      new_img = croppedImg.value;
-    } else if (inputs.group_url != "") {
-      new_img = croppedImg.value;
-    }
     inputs.creator_id = user.value.id;
     const { data, error } = await useAsyncData("user", () =>
-      store.createUserGroup(inputs, new_img).then((createGroupResult) => {
+      store.createUserGroup(inputs).then((createGroupResult) => {
         pending.value = false;
         if (createGroupResult.success) {
           showModal();
