@@ -49,8 +49,7 @@ The first stage of the pipeline deploys everything your application needs to
 interact with the Catalyst APIs. This includes:
 
 - Creating six App IDs, one for each microservice in the group chat application
-- Creating an AWS Dynamo DB instance and the respective state components for
-  each Catalyst App
+- Creating an AWS Dynamo DB instance and the respective state components for each Catalyst App
 - Creating an AWS SNS/SQS Pub/Sub component
 - Creating Pub/Sub topic subscriptions to ensure the Catalyst apps can publish
   and/or subscribe to messages
@@ -66,8 +65,7 @@ variables configured. This includes:
   - `DAPR_API_TOKEN` for each catalyst app
   - `DAPR_HTTP_ENDPOINT` and `DAPR_GRPC_ENDPOINT`
 
-- Uploading docker images for each service to AWS Elastic Container Registry
-  (ECR)
+- Uploading docker images for each service to AWS Elastic Container Registry (ECR)
 
 - Installing a CDK project alongside some dependencies
 
@@ -122,20 +120,20 @@ Catalyst project & a generated API token.
 1. Create a Catalyst project
 
    ```bash
-   diagrid project create $DIAGRID_PROJECT
+   diagrid project create $PROJECT
    ```
 
 1. Create a Catalyst project
 
    ```bash
-   diagrid project use $DIAGRID_PROJECT
+   diagrid project use $PROJECT
    ```
 
 1. Create an API key which can be used by the pipeline when making Catalyst
    management API commands and store in an environment variable
 
    ```bash
-   diagrid apikey create --name catalyst-api-key --role  cra.diagrid:admin
+   diagrid apikey create --name catalyst-api-key --role cra.diagrid:admin
    ```
 
    ```bash
@@ -155,8 +153,7 @@ Catalyst project & a generated API token.
    - AWS_ACCESS_KEY_ID
    - AWS_SECRET_ACCESS_KEY
    - AWS_ACCOUNT_ID
-   - AWS_DEFAULT_REGION
-   - DIAGRID_API_KEY
+   - CATALYST_API_KEY
 1. Select `new respository variable` and add the following values
    - AWS_DEFAULT_REGION
    - DIAGRID_PROJECT
@@ -170,16 +167,13 @@ Navigate to the folder `group-chat-app-ui` and create a `.env` file at root. The
 `.env` file will contain private credentials required to connect the GraphQL API
 to the Frontend Application.
 
-Next,
-
-1. Sign in to the AWS console, navigate to the `AWS AppSync` service using the
+1. Sign in to the AWS console and navigate to the `AWS AppSync` service using the
    search bar. ![search_appsync](./assets/search_appsync.png)
 
-2.Click the `groupChatApp` api,and from the menu on the left hand side of the
-screen, click `Settings`.
+1. Click the `groupChatApp` api, and from the menu on the left hand side of the
+screen, select `Settings`.
 
-Assuming the `.env` file you created above is still open, if not, open it and
-fill in the blank spaces.
+1. Return to your newly created `.env` file and add the following details:
 
 ```json
 NUXT_APPSYNC_GRAPHQL_ENDPOINT=[GRAPHQL_ENDPOINT]
@@ -190,7 +184,7 @@ NUXT_APPSYNC_AUTHENTICATION_TYPE=API_KEY
 ```
 
 The `Graphql endpoint`, `api-key` and `region` are available in the Settings
-screen of the appsync api.
+screen of the AppSync API.
 
 From your CLI, navigate to the root of `group-chat-app-ui` and run the commands
 below.
@@ -199,20 +193,19 @@ below.
 
 `npm run dev`
 
-## Creating and running a diagrid Catalyst app locally
+## Creating and running a Catalyst app locally
 
 Assuming you created an AWS Access Key/secret in the prerequisites section. Once
 cloned and opened inside the IDE.
 
 Setup these environment variables in your CLI.
 
-```
+```bash
 export CONNECTION_ACCESS_KEY=******
 export CONNECTION_SECRET_KEY=********8
 export AWS_DEFAULT_REGION=****
 export AWS_ACCOUNT_ID=2******
 export GROUP_CHAT_MICROSERVICES=group-chat-microservices
-
 ```
 
 Then run the command `python run.py` to install and configure your diagrid
