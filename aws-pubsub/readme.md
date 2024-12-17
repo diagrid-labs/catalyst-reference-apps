@@ -2,6 +2,9 @@
 
 ![Solutions architecture](./docs/assets/solutions_architecture.png)
 
+## SQL QUERIES
+* [SQL QUERIES FOR CREATING TABLES](./docs/sql_queries.md)
+
 ## Getting started
 
 * [Prerequisites](./docs/prerequisites.md)

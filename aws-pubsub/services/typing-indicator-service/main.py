@@ -11,7 +11,7 @@ from models.typing_model import TypingModel
 from models.cloud_events import CloudEvent
 
 typing_indicator_db = os.getenv('DAPR_TYPING_INDICATOR_TABLE', '')
-
+aurora_db_binding = os.getenv('DAPR_GROUP_BINDING', '')
 pubsub_name = os.getenv('DAPR_AWS_PUB_SUB_BROKER', '')
 group_subscription_topic = os.getenv('DAPR_GROUP_SUBSCRIPTION_TOPIC', '')
 
@@ -30,14 +30,15 @@ def health_check():
 def add_typing_indicator(typing: TypingModel):
     with DaprClient() as d:
         logging.info(f"Adding Typing Indicator for user: {typing.user_id} and group: {typing.group_id}")
-
+        add_typing_indicator_sql = {
+            "sql": f"INSERT INTO typing_indicator(id, user_id, group_id, typing) "
+                   f"VALUES ('{typing.user_id}-{typing.group_id}', '{typing.user_id}', '{typing.group_id}', {'TRUE' if typing.typing else 'FALSE'});"
+        }
         try:
-            d.save_state(store_name=typing_indicator_db,
-                         key=f'{typing.user_id}-{typing.group_id}',
-                         value=typing.model_dump_json(),
-                         state_metadata={"contentType": "application/json"})
+            typing_resp = d.invoke_binding(binding_name=aurora_db_binding, operation="query",
+                                           binding_metadata=add_typing_indicator_sql)
 
-            return typing
+            return typing_resp.data
 
 
         except grpc.RpcError as err:
@@ -52,19 +53,16 @@ def update_typing_indicator(cloud_event: CloudEvent):
         logging.info(f'Received message model event: %s:' % {cloud_event.data['message_model']})
 
         message_model = json.loads(cloud_event.data['message_model'])
+        typing_id = f"{message_model['user_id']} - {message_model['group_id']}"
 
-        typing_indicator = {
-            "id": f"{message_model['user_id']} - {message_model['group_id']}",
-            "user_id": message_model['user_id'],
-            "group_id": message_model['group_id'],
-            "typing": False
+        update_typing_indicator_sql = {
+            "sql": f"UPDATE typing_indicator SET typing = 'FALSE' WHERE id = '{typing_id}';"
         }
-
         try:
-            d.save_state(store_name=typing_indicator_db,
-                         key=typing_indicator["id"],
-                         value=json.dumps(typing_indicator),
-                         state_metadata={"contentType": "application/json"})
+
+            resp = d.invoke_binding(binding_name=aurora_db_binding, operation="query",
+                                    binding_metadata=update_typing_indicator_sql)
+            logging.info(f'Updated {resp.data}')
 
             return {
                 "status_code": 201,
