@@ -1,8 +1,6 @@
 name: Deploy AWS Pub/Sub Reference App Resources
 
-
 on: workflow_dispatch
-
 
 jobs:
   configure-diagrid-resources:
@@ -169,7 +167,6 @@ jobs:
         run: |
           diagrid project use ${{vars.DIAGRID_PROJECT}} --api-key ${{secrets.CATALYST_API_KEY}}
 
-
       # Retrieve API Tokens and URLs for all App IDs
       - name: Retrieve API Token for each service, http and grpc urls for the project
 
@@ -228,7 +225,6 @@ jobs:
 
 
           cat ./aws-pubsub/cdk-infra/service_tokens.json
-
 
       - name: Upload service_tokens.json
         uses: actions/upload-artifact@v4

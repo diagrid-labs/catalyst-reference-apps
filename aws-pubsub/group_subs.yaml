@@ -10,7 +10,7 @@ spec:
   subscriptionSpec:
     bulkSubscribe:
       enabled: false
-    connectionName: aws-pubsub
+    componentName: aws-pubsub
     deadLetterTopic: group-subscription-DLT
     routes:
       default: /default/group
