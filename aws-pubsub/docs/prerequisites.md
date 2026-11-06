@@ -4,8 +4,8 @@ Please ensure you have the following tools and dependencies configured before pr
 
 ## Diagrid
 
-- [Diagrid Account](https://catalyst.diagrid.io/) with Catalyst access
-- [Diagrid CLI](https://docs.diagrid.io/catalyst/references/cli-reference/intro/)
+- [Diagrid Account](https://catalyst.diagrid.io/) with Diagrid access
+- [Diagrid CLI](https://docs.diagrid.io/references/diagrid/diagrid-cli-intro/)
 
 ## AWS
 

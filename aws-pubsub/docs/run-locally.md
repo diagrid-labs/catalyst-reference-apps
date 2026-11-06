@@ -1,4 +1,4 @@
-## Creating and running a diagrid Catalyst app locally
+## Creating and running a diagrid Diagrid app locally
 
 Assuming you created an AWS Access Key/secret in the prerequisites section. Once
 cloned and open inside the IDE.
