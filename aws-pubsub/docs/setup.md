@@ -9,15 +9,15 @@ The group chat application is comprised of six microservices:
 - Typing indicator service
 - Read receipts service
 
-Each microservice will have a corresponding App ID representation in Catalyst.
+Each microservice will have a corresponding App ID representation in Diagrid.
 
 The services communicate asynchronously through publish-subscribe messaging
-using the Catalyst Pub/Sub API. The API is configured to use AWS SNS topics and
+using the Diagrid Pub/Sub API. The API is configured to use AWS SNS topics and
 AWS SQS subscriptions for the messaging infrastructure. The SNS/SQS topics and
-subscriptions are created on-demand by Catalyst, therefore no upfront infra
+subscriptions are created on-demand by Diagrid, therefore no upfront infra
 deployment is required.
 
-In addition, each service is instrumented to use the Catalyst State API for
+In addition, each service is instrumented to use the Diagrid State API for
 managing application state. The State API is configured to use AWS Dynamo DB.
 
 ![group](./assets/group_dk.png)
@@ -25,7 +25,7 @@ managing application state. The State API is configured to use AWS Dynamo DB.
 ## Solution structure
 
 The `.github` folder contains a Github Actions pipeline setup to automate the
-creation and configuration of all necessary Catalyst and AWS resources.
+creation and configuration of all necessary Diagrid and AWS resources.
 
 ```bash
 |catalyst-reference-apps
@@ -46,21 +46,21 @@ The Github workflow includes three stages:
 ### 1. configure-diagrid-resources
 
 The first stage of the pipeline deploys everything your application needs to
-interact with the Catalyst APIs. This includes:
+interact with the Diagrid APIs. This includes:
 
 - Creating six App IDs, one for each microservice in the group chat application
-- Creating an AWS Dynamo DB instance and the respective state components for each Catalyst App
+- Creating an AWS Dynamo DB instance and the respective state components for each Diagrid App
 - Creating an AWS SNS/SQS Pub/Sub component
-- Creating Pub/Sub topic subscriptions to ensure the Catalyst apps can publish
+- Creating Pub/Sub topic subscriptions to ensure the Diagrid apps can publish
   and/or subscribe to messages
 
 ### 2. upload-to-ecs
 
 The second stage of the pipeline deploys each application service to AWS Elastic
-Container Service using the AWS CDK with the approriate Catalyst environment
+Container Service using the AWS CDK with the approriate Diagrid environment
 variables configured. This includes:
 
-- Retrieving the Catalyst project configuration settings such as:
+- Retrieving the Diagrid project configuration settings such as:
 
   - `DAPR_API_TOKEN` for each catalyst app
   - `DAPR_HTTP_ENDPOINT` and `DAPR_GRPC_ENDPOINT`
@@ -76,13 +76,13 @@ variables configured. This includes:
   - An AWS Elastic Container Service (ECS) cluster
   - Fargate applications with associated Application Load Balancers (ALB)
 
-- Configuring Catalyst App Endpoints by retrieving the ALB endpoints for each
-  fargate instance and adding them to their respective Catalyst App IDs.
+- Configuring Diagrid App Endpoints by retrieving the ALB endpoints for each
+  fargate instance and adding them to their respective Diagrid App IDs.
 
 ### 3. deploy-graphql-cdk-stack
 
 The third stage of the pipeline deploys each application service to AWS Elastic
-Container Service using the AWS CDK with the approriate Catalyst environment
+Container Service using the AWS CDK with the approriate Diagrid environment
 variables configured. This includes:
 
 - Installs CDK and accompanying dependencies.
@@ -96,10 +96,10 @@ application, which will be covered later on.
 
 ## Preparing the pipeline
 
-In order to deploy Catalyst resources from the pipeline, you will need a
-Catalyst project & a generated API token.
+In order to deploy Diagrid resources from the pipeline, you will need a
+Diagrid project & a generated API token.
 
-1. Login to Catalyst
+1. Login to Diagrid
 
    ```bash
    diagrid login
@@ -111,25 +111,25 @@ Catalyst project & a generated API token.
    diagrid orgs use [your-org-name]
    ```
 
-1. Select a unique project name for your Catalyst project
+1. Select a unique project name for your Diagrid project
 
    ```bash
    export DIAGRID_PROJECT="group-chat-app"
    ```
 
-1. Create a Catalyst project
+1. Create a Diagrid project
 
    ```bash
    diagrid project create $PROJECT
    ```
 
-1. Create a Catalyst project
+1. Create a Diagrid project
 
    ```bash
    diagrid project use $PROJECT
    ```
 
-1. Create an API key which can be used by the pipeline when making Catalyst
+1. Create an API key which can be used by the pipeline when making Diagrid
    management API commands and store in an environment variable
 
    ```bash
@@ -193,7 +193,7 @@ below.
 
 `npm run dev`
 
-## Creating and running a Catalyst app locally
+## Creating and running a Diagrid app locally
 
 Assuming you created an AWS Access Key/secret in the prerequisites section. Once
 cloned and opened inside the IDE.

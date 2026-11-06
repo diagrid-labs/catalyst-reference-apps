@@ -345,7 +345,7 @@ jobs:
 
       # Loop through the JSON array and extract values
 
-      - name: Update Catalyst App IDs with AWS App Endpoints
+      - name: Update Diagrid App IDs with AWS App Endpoints
 
         run: |
           # Read the JSON array from the file

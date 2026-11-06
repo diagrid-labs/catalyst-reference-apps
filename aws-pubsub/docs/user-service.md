@@ -3,7 +3,7 @@
 This service is responsible for all User functionality. User State will be saved
 inside the `user-table` DynamoDB table.
 
-At the time of creating this application, Catalyst API's do not support
+At the time of creating this application, Diagrid API's do not support
 `Querying` with DynamoDB.
 
 So currently it's not possible to query a list of anything unless the data is
