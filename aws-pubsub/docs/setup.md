@@ -28,7 +28,7 @@ The `.github` folder contains a Github Actions pipeline setup to automate the
 creation and configuration of all necessary Diagrid and AWS resources.
 
 ```bash
-|catalyst-reference-apps
+|diagrid-reference-apps
 |-.github
    |--workflows
 |-aws-pubsub
@@ -143,7 +143,7 @@ Diagrid project & a generated API token.
 ## Deploying the solution
 
 1. Create your own fork of this
-   [repo](https://github.com/diagrid-labs/catalyst-reference-apps/tree/main).
+   [repo](https://github.com/diagrid-labs/diagrid-reference-apps/tree/main).
 1. Navigate to the `Settings` menu within your fork.
    ![settings](./assets/settings.png)
 1. Select `Secrets and Variables` from the left-hand menu.
